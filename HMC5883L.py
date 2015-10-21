@@ -35,3 +35,53 @@ class HMC5883:
 		"""
         self.address = address
 
+    def set_measurement_mode(self, new_mode):
+        """Sets the sets measurement mode.
+
+        new_mode -- the new measurement mode
+        See datasheet page 12 table 6.
+        """
+
+        return
+
+    def set_typ_data_output_rate(self, new_rate):
+    	"""Sets the typical data output rate.
+
+    	new_rate -- the new output. See datasheet page 12 table 5.
+    	"""
+
+        return
+
+    def set_operating_mode(self, new_mode):
+    	"""Sets the operating mode.
+
+        new_mode -- the new operating mode. new_mode can be:
+        0: The device will be set to continuous measurement mode.
+        1: The device will be set to single measurement mode (default).
+        2: The device will be set to idle.
+        See datasheet page 14 table 10, 11 and 12.
+        """
+
+        return
+
+    def set_device_gain(self, new_gain):
+    	"""Sets the device gain.
+
+        new_gain -- the new gain.
+        See datasheet page 13 table 9.
+        """
+
+        return
+
+    def get_status(self):
+    	"""Reads and returns the device status.
+
+        See datasheet page 16 table 16 & 17.
+    	"""
+
+    	return
+
+    def get_compass_data(self):
+    	"""Reads and compensates and returns X, Y and Z values."""
+
+        return
