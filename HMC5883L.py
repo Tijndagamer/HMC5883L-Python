@@ -46,9 +46,9 @@ class HMC5883L:
         This is a WIP.
         """
         self.address = address
-        self.bus.write_byte_data(self.address, CONF_REG_A, 0b01110000) # 8 Samples @ 15Hz
-        self.bus.write_byte_data(self.address, CONF_REG_B, 0b00100000) # 1.3 Ga, 1090 gain LSb / Gauss
-        self.bus.write_byte_data(self.address, MODE_REG, 0b00000000) # Set to Continuous sampling
+        self.bus.write_byte_data(self.address, self.CONF_REG_A, 0b01110000) # 8 Samples @ 15Hz
+        self.bus.write_byte_data(self.address, self.CONF_REG_B, 0b00100000) # 1.3 Ga, 1090 gain LSb / Gauss
+        self.bus.write_byte_data(self.address, self.MODE_REG, 0b00000000) # Set to Continuous sampling
 
     def read_i2c_word(self, register):
         """Read two i2c registers and combine them.
