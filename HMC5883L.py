@@ -28,12 +28,36 @@ class HMC5883:
 	DATA_Y_LSB = 8
 	STATUS_REG = 9
 
+	# Measurement modes
+	MEA_MODE_NORM = 0
+	MEA_MODE_POS = 1 # Postive bias for all axes
+	MEA_MODE_NEG = 2 # Negative bias for all axes
+
 	def __init__(self, address):
 		"""Handles the I2C communication between a RPi and a HMC5883L.
 
         This is a WIP.
 		"""
         self.address = address
+
+    def read_i2c_word(self, register):
+    """Read two i2c registers and combine them.
+
+    register -- the first register to read from.
+    Returns the combined read results.
+    """
+    # Read the data from the registers
+    high = self.bus.read_byte_data(self.address, register)
+    low = self.bus.read_byte_data(self.address, register + 1)
+
+    value = (high << 8) + low
+
+    if (value >= 0x8000):
+        return -((65535 - value) + 1)
+    else:
+        return value
+
+    # Set methods
 
     def set_measurement_mode(self, new_mode):
         """Sets the sets measurement mode.
@@ -42,15 +66,29 @@ class HMC5883:
         See datasheet page 12 table 6.
         """
 
+        if new_mode != MEA_MODE_NORM or new_mode != MEA_MODE_POS or new_mode != MEA_MODE_NEG:
+        	print("Invalid new_mode")
+        	return
+
         return
 
     def set_typ_data_output_rate(self, new_rate):
     	"""Sets the typical data output rate.
 
-    	new_rate -- the new output. See datasheet page 12 table 5.
+    	new_rate -- the new output.
+    	See datasheet page 12 table 5.
     	"""
 
         return
+
+    def set_sample_count(self, new_count):
+    	"""Sets the average sample count.
+
+    	new_count -- the new average sample count.
+    	See datasheet page 12 table 4.
+    	"""
+
+    	return
 
     def set_operating_mode(self, new_mode):
     	"""Sets the operating mode.
@@ -73,11 +111,58 @@ class HMC5883:
 
         return
 
+    # Get methods
+
+    def get_measurement_mode(self):
+        """Reads and returns the current measurement mode.
+
+        See datasheet page 12 table 6.
+        """
+
+        return
+
+    def get_typ_data_output_rate(self):
+        """Reads and returns the current typical data output rate.
+
+        See datasheet page 12 table 5.
+        """
+
+        return
+
+    def get_sample_count(self):
+    	"""Reads and returns the current average sample count.
+
+    	See datasheet page 12 table 4.
+    	"""
+
+    	return
+
+    def get_operating_mode(self):
+    	"""Reads and returns the current operating mode.
+
+    	See datasheet page 14 table 10, 11 and 12.
+    	"""
+
+    	return
+
+    def get_device_gain(self):
+    	"""Reads and returns the current device gain.
+
+    	See datasheet page 13 table 9.
+    	"""
+
+    	return
+
     def get_status(self):
     	"""Reads and returns the device status.
 
         See datasheet page 16 table 16 & 17.
     	"""
+
+    	return
+
+    def get_self_test_results(self):
+    	"""Gets and returns the self test results."""
 
     	return
 
