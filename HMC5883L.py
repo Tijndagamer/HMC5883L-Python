@@ -46,6 +46,9 @@ class HMC5883L:
         This is a WIP.
         """
         self.address = address
+        self.bus.write_byte_data(self.address, CONF_REG_A, 0b01110000) # 8 Samples @ 15Hz
+        self.bus.write_byte_data(self.address, CONF_REG_B, 0b00100000) # 1.3 Ga, 1090 gain LSb / Gauss
+        self.bus.write_byte_data(self.address, MODE_REG, 0b00000000) # Set to Continuous sampling
 
     def read_i2c_word(self, register):
         """Read two i2c registers and combine them.
@@ -124,6 +127,7 @@ class HMC5883L:
 
         See datasheet page 12 table 6.
         """
+        # This is a temp. solution for all these methods. Should fix this later.
         raw_data = self.bus.read_byte_data(self.address, self.CONF_REG_A)
 
         return raw_data
@@ -176,14 +180,17 @@ class HMC5883L:
     def get_self_test_results(self):
         """Gets and returns the self test results."""
 
+        # BROKEN. TODO: FIX THIS.
         self.bus.write_byte_data(self.address, self.CONF_REG_A, 0x70)
         self.bus.write_byte_data(self.address, self.CONF_REG_B, 0xA0)
         sleep(0.006)
-        z_data = self.bus.read_word_data(self.address, self.DATA_Z_MSB)
-        x_data = self.bus.read_word_data(self.address, self.DATA_X_MSB)
-        y_data = self.bus.read_word_data(self.address, self.DATA_Y_MSB)
+        while True:
+            z_data = self.bus.read_word_data(self.address, self.DATA_Z_MSB)
+            x_data = self.bus.read_word_data(self.address, self.DATA_X_MSB)
+            y_data = self.bus.read_word_data(self.address, self.DATA_Y_MSB)
 
-        return [x_data, y_data, z_data]
+            print(str([x_data, y_data, z_data]))
+            sleep(0.067)
 
     def get_compass_data(self):
         """Reads and compensates and returns X, Y and Z values."""
