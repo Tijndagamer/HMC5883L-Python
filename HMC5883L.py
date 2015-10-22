@@ -8,6 +8,7 @@ Copyright 2015
 
 import smbus
 from time import sleep
+import math
 
 class HMC5883L:
     address = None
@@ -193,6 +194,17 @@ class HMC5883L:
             sleep(0.067)
 
     def get_compass_data(self):
-        """Reads and compensates and returns X, Y and Z values."""
+        """Reads, compensates and returns X, Y and Z values."""
 
-        return
+        raw_x = self.bus.read_word_data(self.address, self.DATA_X_MSB)
+        raw_y = self.bus.read_word_data(self.address, self.DATA_Y_MSB)
+        raw_z = self.bus.read_word_data(self.address, self.DATA_Z_MSB)
+
+        # TODO: Use correct digital resolution for current gain setting.
+        scale = 0.92
+
+        x = raw_x * scale
+        y = raw_y * scale
+        z = raw_z * scale
+
+        return {'x': x, 'y': y, 'z': z}
