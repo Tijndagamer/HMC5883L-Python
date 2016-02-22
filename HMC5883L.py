@@ -44,12 +44,14 @@ class HMC5883L:
     def __init__(self, address = 0x1E):
         """Handles the I2C communication between a RPi and a HMC5883L.
 
-        This is a WIP.
+        This is a WIP, everything is broken (for now)
         """
         self.address = address
         self.bus.write_byte_data(self.address, self.CONF_REG_A, 0b01110000) # 8 Samples @ 15Hz
         self.bus.write_byte_data(self.address, self.CONF_REG_B, 0b00100000) # 1.3 Ga, 1090 gain LSb / Gauss
         self.bus.write_byte_data(self.address, self.MODE_REG, 0b00000000) # Set to Continuous sampling
+
+    # Basic i2c methods
 
     def read_i2c_word(self, register):
         """Read two i2c registers and combine them.
@@ -67,6 +69,9 @@ class HMC5883L:
             return -((65535 - value) + 1)
         else:
             return value
+
+    def read_byte(self, register):
+        return bus.read_byte_data(self.address, register)
 
     # Set methods
 
@@ -196,9 +201,12 @@ class HMC5883L:
     def get_compass_data(self):
         """Reads, compensates and returns X, Y and Z values."""
 
-        raw_x = self.bus.read_word_data(self.address, self.DATA_X_MSB)
-        raw_y = self.bus.read_word_data(self.address, self.DATA_Y_MSB)
-        raw_z = self.bus.read_word_data(self.address, self.DATA_Z_MSB)
+        #raw_x = self.bus.read_word_data(self.address, self.DATA_X_MSB)
+        #raw_y = self.bus.read_word_data(self.address, self.DATA_Y_MSB)
+        #raw_z = self.bus.read_word_data(self.address, self.DATA_Z_MSB)
+        raw_x = self.read_i2c_word(self.DATA_X_MSB)
+        raw_y = self.read_i2c_word(self.DATA_Y_MSB)
+        raw_z = self.read_i2c_word(self.DATA_Z_MSB)
 
         # TODO: Use correct digital resolution for current gain setting.
         scale = 0.92
